@@ -21,3 +21,40 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+*.log
+/out/
+/work/
+*/build/
+xcuserdata/
+*.iws
+.DS_Store
+/bamboo/TEST*.xml
+/bamboo/junit*.properties
+*.o
+*.lo
+*.obj
+.deps
+atlassian-ide-plugin.xml
+*.ipr
+*.iml
+target
+/libs/
+pom-installed.xml
+git-patch-prop-local.sh
+/slurp.sh
+**/cpp/**/vs/x64/
+**/cpp/**/vs/Win32/
+/modules/platforms/cpp/doc/
+.settings
+.classpath
+.project
+/modules/platforms/**/*.VC.db
+**/dotnet/libs/
+*.classname*
+*.exe
+.mvn/
+
+#Ignore all Intellij IDEA files (except default inspections config)
+.idea/
+!.idea/inspectionProfiles/Project_Default.xml
