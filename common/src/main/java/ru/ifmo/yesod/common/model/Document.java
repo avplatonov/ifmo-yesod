@@ -17,6 +17,7 @@
 
 package ru.ifmo.yesod.common.model;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class Document {
@@ -28,9 +29,10 @@ public class Document {
     private final String[] tags;
     private final String status;
     private final Date ts;
+    private final String body;
 
     public Document(String name, String country, String typeName, String relatedOrganization, String relationType,
-        String[] tags, String status, Date ts) {
+        String[] tags, String status, Date ts, String body) {
         this.name = name;
         this.country = country;
         this.typeName = typeName;
@@ -39,5 +41,56 @@ public class Document {
         this.tags = tags;
         this.status = status;
         this.ts = ts;
+        this.body = body;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public String getRelatedOrganization() {
+        return relatedOrganization;
+    }
+
+    public String getRelationType() {
+        return relationType;
+    }
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Date getTs() {
+        return ts;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    @Override public String toString() {
+        return "Document{" +
+            "name='" + name + '\'' +
+            ", country='" + country + '\'' +
+            ", typeName='" + typeName + '\'' +
+            ", relatedOrganization='" + relatedOrganization + '\'' +
+            ", relationType='" + relationType + '\'' +
+            ", tags=" + Arrays.toString(tags) +
+            ", status='" + status + '\'' +
+            ", ts=" + ts +
+            ", body='" + body + '\'' +
+            '}';
     }
 }
