@@ -20,12 +20,21 @@ package ru.ifmo.yesod.common.morphology;
 import java.io.IOException;
 import java.util.Arrays;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.ru.RussianAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.morphology.russian.RussianAnalyzer;
 import ru.ifmo.yesod.common.model.Document;
 
 public class LuceneDocumentNormalizer implements DocumentNormalizer {
-    private RussianAnalyzer analyzer = new RussianAnalyzer();
+    private RussianAnalyzer analyzer;
+
+    {
+        try {
+            analyzer = new RussianAnalyzer();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public Document normalizeFields(Document doc) {
         return new Document(
