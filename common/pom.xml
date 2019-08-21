@@ -7,6 +7,14 @@
     <groupId>ru.ifmo.yesod</groupId>
     <artifactId>common</artifactId>
     <version>0.0.1</version>
+
+    <parent>
+        <groupId>ru.ifmo</groupId>
+        <artifactId>yesod</artifactId>
+        <version>1</version>
+        <relativePath>../</relativePath>
+    </parent>
+
     <build>
         <plugins>
             <plugin>

@@ -8,6 +8,13 @@
     <name>morphology</name>
     <url>http://maven.apache.org</url>
 
+    <parent>
+        <groupId>ru.ifmo</groupId>
+        <artifactId>yesod</artifactId>
+        <version>1</version>
+        <relativePath>../</relativePath>
+    </parent>
+
     <scm>
         <connection>scm:git:https://github.com/AKuznetsov/russianmorphology.git</connection>
         <developerConnection>scm:git:git@github.com:AKuznetsov/russianmorphology.git</developerConnection>
@@ -78,7 +85,7 @@
             </snapshots>
         </repository>
     </repositories>
-    
+
     <pluginRepositories>
         <pluginRepository>
             <id>mc-release</id>
@@ -119,14 +126,14 @@
                 <version>1.4.0</version>
                 <configuration>
                     <basedir>${project.parent.basedir}</basedir>
-                    <header>etc/header.txt</header>
+                    <header>russianmorphology/etc/header.txt</header>
                     <excludes>
-                        <exclude>**/*.txt</exclude>
-                        <exclude>**/*.info</exclude>
-                        <exclude>**/pom.xml</exclude>
+                        <exclude>russianmorphology/**/*.txt</exclude>
+                        <exclude>russianmorphology/**/*.info</exclude>
+                        <exclude>russianmorphology/**/pom.xml</exclude>
                     </excludes>
                     <includes>
-                        <include>**/src/**</include>
+                        <include>russianmorphology/**/src/**</include>
                     </includes>
                 </configuration>
                 <executions>
