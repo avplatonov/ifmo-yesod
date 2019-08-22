@@ -14,7 +14,7 @@
 			   <nav class="navbar navbar-dark bg-dark">
 					<a class="navbar-brand" href="#">
 		    			<img src="${pageContext.request.contextPath}/img/logo.png" width="30" height="30" alt="logo">    		
-						System of content retrieval
+						System of document searching
 					</a>
 		  		</nav>
 		  	
@@ -28,10 +28,14 @@
 								<div class = "col-10">
 									<input type="text" class="form-control" id="query" placeholder="write 2 or more words" name="query">
 		      					</div>
-		      					<div class = "col-2">
-		      					<button type="submit"class="btn btn-dark">Search</button>
-		      					</div>
-	      					</div>
+		      					<div class = "col-1">
+		      						<button type="submit"class="btn btn-dark">Search</button>
+	      						</div>
+	      						<div class="col-6 d-flex">
+	      							<div class="p-2"><a href="/?query=${query}&sort=1">Sort by Bell</a></div>
+	      							<div class="p-2"><a href="/?query=${query}&sort=0">Sort by Concurrence</a></div>
+	      						</div>
+	      					</div>	
 	      				</form>
 	      			</div>
 	      			<div class="col-3 ml-auto">

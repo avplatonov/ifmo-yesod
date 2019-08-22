@@ -1,8 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML>
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>Welcome</title>
+		<title>YESOD</title>
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css"/>
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.min.css"/>
 	</head>
@@ -12,7 +13,7 @@
 			   <nav class="navbar navbar-dark bg-dark">
 					<a class="navbar-brand" href="#">
 		    			<img src="${pageContext.request.contextPath}/img/logo.png" width="30" height="30" alt="logo">    		
-						System of content retrieval
+						System of document retrieval
 					</a>
 		  		</nav>
 		  	
