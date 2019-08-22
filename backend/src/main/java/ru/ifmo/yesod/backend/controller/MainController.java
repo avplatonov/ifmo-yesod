@@ -36,18 +36,22 @@ public class MainController {
     
     
     @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
-    public String index(Model model, @RequestParam(value="query",required = false) String text, @RequestParam(value="sort",required = false) String sotrType) {
-    	if (text == null){
+    public String index(Model model, @RequestParam(value="query",required = false) String text, @RequestParam(value="sort",required = false) String sortType) {
+    	
+    	if (text == null || text == ""){
     		return "index";
-    	}
-    	else { 
-    		Collections.sort(results, DocumentItem.bellCompare);
-   
-    		model.addAttribute("results", results );
+    	}    	
+    	else {
+    		model.addAttribute("query", text);
+    		if(sortType == null || sortType.equals("1") ) {    			
+    	    	Collections.sort(results, DocumentItem.bellCompare); 
+    			model.addAttribute("results", results );
+    		}
+    		else if (sortType.equals("0")){
+    			Collections.sort(results, DocumentItem.concurrenceCompare); 
+    			model.addAttribute("results", results );
+    		}
     		return "response";
     	}
     }
-
- 
-
 }
