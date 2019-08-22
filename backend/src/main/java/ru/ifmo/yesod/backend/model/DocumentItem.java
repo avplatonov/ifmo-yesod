@@ -49,7 +49,7 @@ public class DocumentItem {
 		}
 	};
 	
-	public static Comparator<DocumentItem> concurrenceCopare = new Comparator<DocumentItem>() {
+	public static Comparator<DocumentItem> concurrenceCompare = new Comparator<DocumentItem>() {
 		public int compare(DocumentItem r1, DocumentItem r2) {
 			double point1 = r1.getPontsConcurrence();
 			double point2 = r2.getPontsConcurrence();
