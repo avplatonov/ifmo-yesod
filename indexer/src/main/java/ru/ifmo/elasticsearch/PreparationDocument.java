@@ -30,7 +30,14 @@ public class PreparationDocument {
         return docFilesForES;
     }
 
-    public void callAllDocumentReceiving(){
+    public boolean isEmpty(){
+        return docFilesForES.isEmpty();
+    }
+
+    /**
+     *
+     */
+    public void callAllDocumentsReceiving(){
         try {
             List<File> listFiles = new ArrayList<>(Files.walk(Paths.get(path))
                     .filter(Files::isRegularFile)
@@ -92,12 +99,4 @@ public class PreparationDocument {
         return Arrays.asList(tags.replaceAll("^\\s+","").split(","));
     }
 
-
-
-    public static void main(String[] args) {
-        //PreparationDocument preparationDocument = new PreparationDocument();
-        //preparationDocument.callAllDocumentReceiving("Y:\\Workspace\\elasticsearch\\dataset");
-        //System.out.println(preparationDocument.getDocFilesForES().size());
-        //preparationDocument.documentReceiving("Y:\\Workspace\\elasticsearch\\dataset\\document_1.txt");
-    }
 }
