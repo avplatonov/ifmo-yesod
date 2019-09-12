@@ -54,7 +54,7 @@
 								<c:forEach  items="${results}" var ="result">
 								<li class="list-group-item">									
 									<h5>
-										<a href="#">${result.title}</a>
+										<a href="/?docName=${result.id}&query=${query}">${result.name}</a>
 									</h5>
 									<span class="badge badge-secondary">Bell: ${result.pointsBell}</span>
 									<span class="badge badge-secondary">Concurrence: ${result.pontsConcurrence}</span>
