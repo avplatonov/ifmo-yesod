@@ -1,25 +1,33 @@
 package ru.ifmo.yesod.backend.model;
 
+import ru.ifmo.elasticsearch.DocObor;
+
+import java.util.ArrayList;
 import java.util.Comparator;
 
-public class DocumentItem {
-	private String title;
+public class DocumentItem  extends DocObor{
+	
 	private double pointsBell;
 	private double pontsConcurrence;
+	private int viewId;
 
-	public DocumentItem(String title, double pointsBell, double pontsConcurrence) {
-		this.title = title;
+
+	public DocumentItem(DocObor p, int viewId) {
+
+		super(p.getName(), p.getCountry(), p.getType(), p.getOrganization(), p.getRelationType(), (ArrayList<String>) p.getTags(), p.getTS_1(), p.getTS_2(), p.getStatus(), p.getBody());
+		this.pointsBell = (double)Math.round(Math.random() * 100) /100;
+		this.pontsConcurrence = (double)Math.round(Math.random() * 100) /100;
+		this.viewId = viewId;
+	}
+	public DocumentItem(String name, String country, String type, String organization, String relationType, ArrayList<String> tags, String TS_1, String TS_2, String status, String body, double pointsBell, double pontsConcurrence, int viewId) {
+
+		super(name, country, type, organization, relationType, tags, TS_1, TS_2, status, body);
 		this.pointsBell = pointsBell;
 		this.pontsConcurrence = pontsConcurrence;
+		this.viewId = viewId;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
+	
 
 	public double getPointsBell() {
 		return pointsBell;
@@ -35,6 +43,14 @@ public class DocumentItem {
 
 	public void setPontsConcurrence(double pontsConcurrence) {
 		this.pontsConcurrence = pontsConcurrence;
+	}
+
+
+	public int getViewId() {
+		return viewId;
+	}
+	public void setViewId(int viewId) {
+		this.viewId = viewId;
 	}
 
 
