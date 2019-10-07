@@ -12,7 +12,7 @@
 		<header class="header">
 			 
 			   <nav class="navbar navbar-dark bg-dark">
-					<a class="navbar-brand" href="#">
+					<a class="navbar-brand" href="/">
 		    			<img src="${pageContext.request.contextPath}/img/logo.png" width="30" height="30" alt="logo">    		
 						System of document searching
 					</a>
@@ -23,7 +23,7 @@
       		<div class = "container">
       			<div class="row justify-content-center">
       				<div class="col-lg-7">
-	      				<form action="/" method="get">
+	      				<form action="/search" method="get">
 							<div class="form-row">
 								<div class = "col-10">
 									<input type="text" class="form-control" id="query" placeholder="write 2 or more words" name="query">
@@ -32,8 +32,8 @@
 		      						<button type="submit"class="btn btn-dark">Search</button>
 	      						</div>
 	      						<div class="col-6 d-flex">
-	      							<div class="p-2"><a href="/?query=${query}&sort=1">Sort by Bell</a></div>
-	      							<div class="p-2"><a href="/?query=${query}&sort=0">Sort by Concurrence</a></div>
+	      							<div class="p-2"><a href="/search?query=${query}&sort=1">Sort by Bell</a></div>
+	      							<div class="p-2"><a href="/search?query=${query}&sort=0">Sort by Concurrence</a></div>
 	      						</div>
 	      					</div>	
 	      				</form>
@@ -49,18 +49,28 @@
       		<section>
 	      		<div class="container">
 	      			<div class="row">
-	      				<div class="col-lg-8">
-	      					<ul class="list-group list-group-flush">
-								<c:forEach  items="${results}" var ="result">
-								<li class="list-group-item">									
-									<h5>
-										<a href="/?docName=${result.id}&query=${query}">${result.name}</a>
+	      				<div class="col-lg-8 col-sm-10">
+							<table class="table table-striped">
+							  <thead>
+							    <tr>
+							      <th scope="col">Result</th>
+							      <th scope="col">Bell</th>
+							      <th scope="col">Concurrence</th>
+							    </tr>
+							  </thead>
+							   <tbody>
+							  <c:forEach  items="${results}" var ="result">
+							  	<tr>
+							      <td><h5>
+										<a href="/search?viewId=${result.viewId}&query=${query}">${result.name}</a>
 									</h5>
-									<span class="badge badge-secondary">Bell: ${result.pointsBell}</span>
-									<span class="badge badge-secondary">Concurrence: ${result.pontsConcurrence}</span>
-								</li>
-						         </c:forEach>
-							</ul>
+							      </td>
+							      <td>${result.pointsBell}</td>
+							      <td>${result.pontsConcurrence}</td>
+							    </tr>
+							  </c:forEach>
+							    </tbody>
+								</table>
 	      				</div>
 	      			</div>
 	      		</div>

@@ -11,9 +11,9 @@
 		<header class="header">
 			 
 			   <nav class="navbar navbar-dark bg-dark">
-					<a class="navbar-brand" href="#">
+					<a class="navbar-brand" href="/">
 		    			<img src="${pageContext.request.contextPath}/img/logo.png" width="30" height="30" alt="logo">    		
-						System of document retrieval
+						System of document search
 					</a>
 		  		</nav>
 		  	
@@ -22,7 +22,7 @@
       		<div class = "container ">
       			<div class="row justify-content-center">
       				<div class="col-lg-7">
-	      				<form action="/" method="get">
+	      				<form action="/search" method="get">
 							<div class="form-row">
 								<div class = "col-10">
 									<input type="text" class="form-control" id="query" placeholder="write 2 or more words" name="query">

@@ -12,7 +12,7 @@
 		<header class="header">
 			 
 			   <nav class="navbar navbar-dark bg-dark">
-					<a class="navbar-brand" href="#">
+					<a class="navbar-brand" href="/">
 		    			<img src="${pageContext.request.contextPath}/img/logo.png" width="30" height="30" alt="logo">    		
 						System of document searching
 					</a>
@@ -31,7 +31,6 @@
 		      					<div class = "col-1">
 		      						<button type="submit"class="btn btn-dark">Search</button>
 	      						</div>
-
 	      					</div>	
 	      				</form>
 	      			</div>
@@ -39,8 +38,7 @@
 	      				<div class="alert alert-success" role="alert">
 	      					<p class="info">Total documents: 424</p>
 	      					<p class="info">Indexed documents: 424</p>
-	      				</div>
-	      				
+	      				</div>	      				
 	      			</div>
       			</div>
       		<section>
@@ -71,6 +69,5 @@
 	      	</section>	      
          	</div>
          </section> 
-   </body>
-   
+   </body>  
 </html>
