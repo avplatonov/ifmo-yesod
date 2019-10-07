@@ -14,13 +14,20 @@ import ru.ifmo.elasticsearch.PreparationDocument;
 import ru.ifmo.yesod.backend.model.DocumentItem;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import ru.ifmo.yesod.common.model.*;
+import ru.ifmo.yesod.common.morphology.LuceneDocumentNormalizer;
+import ru.ifmo.yesod.backend.controller.calcConcurrense;
+import ru.ifmo.yesod.backend.controller.calcBell;
 //import com.fasterxml.jackson.databind.ObjectMapper;
-
-
 
 
 
@@ -32,16 +39,16 @@ public class MainController extends ElasticSearchYesod{
     private static final int PORT_TWO = 9300;
     private static final String SCHEME = "http";
 	private static final String INDEX = "doc";
-
+	private static LuceneDocumentNormalizer normalizer = new LuceneDocumentNormalizer() ;
     private RestHighLevelClient restHighLevelClient;
     private PreparationDocument preparationDocuments;
-    final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(1L));
+   
+    
 
-	
-
-	private static List<DocumentItem> viewResults =  new ArrayList<>();;
+	private static List<DocumentItem> viewResults =  new ArrayList<>();
 	private static String queryBuffer = "";
-	public void searcher(String query) throws IOException {
+	
+	private void searcher(String query) throws IOException, ParseException {
 		restHighLevelClient = makeConnection();
 		viewResults.clear();
 		int y =0;
@@ -49,12 +56,17 @@ public class MainController extends ElasticSearchYesod{
 			viewResults.add(new DocumentItem(i,y));
 			y++;			
 		}
-		
+		int j=0;
+		for(DocumentItem i: viewResults) {
+			i.setPontsConcurrence(calcConcurrense.solve(i.getBody(), query));
+			i.setPointsBell(calcBell.solve(i.getBody(), query, 10));
+		}
 
 	}
-
+	
     @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
     public String index(Model model) throws IOException {
+    	
     	return "index";
     }
     
@@ -74,14 +86,17 @@ public class MainController extends ElasticSearchYesod{
 						queryBuffer = query;
 					} catch (IOException e) {
 						e.printStackTrace();
+					} catch (ParseException e) {
+						
+						e.printStackTrace();
 					}
 				}
     			if (viewId !=null) {
     				model.addAttribute("body", viewResults.get(Integer.parseInt(viewId)).getBody());
     				model.addAttribute("name", viewResults.get(Integer.parseInt(viewId)).getName());
-    				model.addAttribute("date", viewResults.get(Integer.parseInt(viewId)).getTS_1());
+    				model.addAttribute("date", viewResults.get(Integer.parseInt(viewId)).getTs());
     				System.out.println("Open document");
-    				//System.out.println(viewResults.get(Integer.parseInt(viewId)).getBody());
+
     				return "docView";
     			}
     			if(sortType == null || sortType.equals("1")){
@@ -90,7 +105,6 @@ public class MainController extends ElasticSearchYesod{
 					model.addAttribute("query", query);
 					
 				}
-
     			else if(sortType.equals("0")){
 					Collections.sort(viewResults, DocumentItem.concurrenceCompare);
 					model.addAttribute("results", viewResults );
