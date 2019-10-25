@@ -12,19 +12,16 @@ import ru.ifmo.elasticsearch.DocObor;
 import ru.ifmo.elasticsearch.ElasticSearchYesod;
 import ru.ifmo.elasticsearch.PreparationDocument;
 import ru.ifmo.yesod.backend.model.DocumentItem;
-
+import ru.ifmo.yesod.backend.controller.calcTfIdf;
+import ru.ifmo.yesod.backend.db.DataCache;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import ru.ifmo.yesod.common.model.*;
-import ru.ifmo.yesod.common.morphology.LuceneDocumentNormalizer;
+
+
 import ru.ifmo.yesod.backend.controller.calcConcurrense;
 import ru.ifmo.yesod.backend.controller.calcBell;
 //import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,42 +31,70 @@ import ru.ifmo.yesod.backend.controller.calcBell;
 @Controller
 public class MainController extends ElasticSearchYesod{
 	
-	private static final String HOST = "localhost";
-    private static final int PORT_ONE = 9200;
-    private static final int PORT_TWO = 9300;
-    private static final String SCHEME = "http";
-	private static final String INDEX = "doc";
-	private static LuceneDocumentNormalizer normalizer = new LuceneDocumentNormalizer() ;
-    private RestHighLevelClient restHighLevelClient;
-    private PreparationDocument preparationDocuments;
-   
-    
 
-	private static List<DocumentItem> viewResults =  new ArrayList<>();
-	private static String queryBuffer = "";
+    
+	private RestHighLevelClient restHighLevelClient;
+    private PreparationDocument preparationDocuments;
+    
+    //flags for inverse sorting
+    private boolean flagBellSort=false;
+    private boolean flagConcurSort=false;
+    private boolean flagTfIdfSort=false;
 	
+    //variables, that hold result of searching
+    private static List<DocumentItem> viewResults =  new ArrayList<>();
+	private static String queryBuffer = "";
+    
+    //connecting to base with data cache for Tf-Idf calculating 
+    private static	DataCache cacher = new DataCache("index.db");
+    static	List<Double> idf = cacher.getAllIdfData();
+    static	List<String> docIds = cacher.getAllDocIdData();
+    static	List<String> index = cacher.getAllIndexData();
+
+	
+	/**
+	 * Function for getting search result from elastic base
+	 * @param query
+	 * @throws IOException
+	 * @throws ParseException
+	 */
 	private void searcher(String query) throws IOException, ParseException {
 		restHighLevelClient = makeConnection();
 		viewResults.clear();
 		int y =0;
+		DocumentItem tmpItem;
+		double tmp;
 		for(DocObor i : searchDocsOborByTextFromBody(query)) {
-			viewResults.add(new DocumentItem(i,y));
-			y++;			
-		}
-		int j=0;
-		for(DocumentItem i: viewResults) {
-			i.setPontsConcurrence(calcConcurrense.solve(i.getBody(), query));
-			i.setPointsBell(calcBell.solve(i.getBody(), query, 10));
+			tmpItem = new DocumentItem(i,y);
+			tmp = calcBell.solve(i.getBody(), query, 10);
+			tmpItem.setPointsBell((tmp==Double.NaN)? 0 :(double)Math.round(tmp * 1000)/1000);
+			tmp = calcConcurrense.solve(i.getBody(), query, 0.5);
+			tmpItem.setPontsConcurrence((tmp==Double.NaN)? 0 :(double)Math.round(tmp * 1000)/1000);
+			tmp = calcTfIdf.solve(query,i.getDocId(),i.getBody(),idf, docIds,index,cacher);
+			tmpItem.setPointsTfIdf((tmp==Double.NaN)? 0 :(double)Math.round(tmp * 1000)/1000);
+			viewResults.add(tmpItem);
+			y++;
 		}
 
 	}
-	
+	/**
+	 * Getting index page
+	 */
     @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
     public String index(Model model) throws IOException {
     	
     	return "index";
     }
     
+    /**
+     * If we have a request, this function process it and parameters/ 
+     * @param model Spring notation for link to model
+     * @param query 
+     * @param sortType number metric from view for sorting
+     * @param viewId  number of each instance of response for sorting in view
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = { "/search" }, method = RequestMethod.GET)
     public String search(Model model,
     		@RequestParam(value="query",required = false) String query,
@@ -90,6 +115,7 @@ public class MainController extends ElasticSearchYesod{
 						
 						e.printStackTrace();
 					}
+					
 				}
     			if (viewId !=null) {
     				model.addAttribute("body", viewResults.get(Integer.parseInt(viewId)).getBody());
@@ -99,17 +125,52 @@ public class MainController extends ElasticSearchYesod{
 
     				return "docView";
     			}
-    			if(sortType == null || sortType.equals("1")){
-					Collections.sort(viewResults, DocumentItem.bellCompare);
+    			if(sortType == null || sortType.equals("0")){
+					if(flagBellSort) {
+						Collections.sort(viewResults, DocumentItem.bellCompareUp);
+						flagBellSort = !flagBellSort;
+						
+					}
+					else {
+						Collections.sort(viewResults, DocumentItem.bellCompareDouwn);
+						flagBellSort = !flagBellSort;
+						
+					}
+					
 					model.addAttribute("results", viewResults);
 					model.addAttribute("query", query);
 					
 				}
-    			else if(sortType.equals("0")){
-					Collections.sort(viewResults, DocumentItem.concurrenceCompare);
+    			else if(sortType.equals("1")){
+					if(flagConcurSort) {
+    					Collections.sort(viewResults, DocumentItem.concurrenceCompareUp);
+    					flagConcurSort = !flagConcurSort;
+    					
+					}
+					else {
+						Collections.sort(viewResults, DocumentItem.concurrenceCompareDouwn);
+						flagConcurSort = !flagConcurSort;
+						
+					}
+					
 					model.addAttribute("results", viewResults );
 					model.addAttribute("query", query);
 				}
+    			else if(sortType.equals("2")){
+					if(flagTfIdfSort) {
+						Collections.sort(viewResults, DocumentItem.tfIdfCompareUp);
+						flagTfIdfSort = !flagTfIdfSort;
+						
+					}
+					else {
+						Collections.sort(viewResults, DocumentItem.tfIdfCompareDouwn);
+						flagTfIdfSort = !flagTfIdfSort;
+					}
+					
+					model.addAttribute("results", viewResults );
+					model.addAttribute("query", query);
+				}
+  			
     			return "response";
     		}
     	 		
