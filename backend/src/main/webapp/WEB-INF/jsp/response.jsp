@@ -26,22 +26,23 @@
 	      				<form action="/search" method="get">
 							<div class="form-row">
 								<div class = "col-10">
-									<input type="text" class="form-control" id="query" placeholder="write 2 or more words" name="query">
+									<input type="text" class="form-control" id="query" placeholder="write 2 or more words" name="query" value="${query}">
 		      					</div>
 		      					<div class = "col-1">
 		      						<button type="submit"class="btn btn-dark">Search</button>
 	      						</div>
-	      						<div class="col-6 d-flex">
-	      							<div class="p-2"><a href="/search?query=${query}&sort=1">Sort by Bell</a></div>
-	      							<div class="p-2"><a href="/search?query=${query}&sort=0">Sort by Concurrence</a></div>
+	      						<div class="col-8 d-flex">
+	      							<div class="p-2"><a href="/search?query=${query}&sort=0">Bell sort </a></div>
+	      							<div class="p-2"><a href="/search?query=${query}&sort=1">Concurrence sort </a></div>
+	      							<div class="p-2"><a href="/search?query=${query}&sort=2">TfIdf sort</a></div>
+	      							<div class="p-2"><a href="#">users Marks</a></div>
 	      						</div>
 	      					</div>	
 	      				</form>
 	      			</div>
-	      			<div class="col-3 ml-auto">
+	      			<div class="col-2 d-flex justify-content-end">
 	      				<div class="alert alert-success" role="alert">
-	      					<p class="info">Total documents: 424</p>
-	      					<p class="info">Indexed documents: 424</p>
+	      					<p class="info">Total documents: 424 I ndexed documents: 424</p>
 	      				</div>
 	      				
 	      			</div>
@@ -49,13 +50,15 @@
       		<section>
 	      		<div class="container">
 	      			<div class="row">
-	      				<div class="col-lg-8 col-sm-10">
+	      				<div class="col-lg-10 col-sm-10">
 							<table class="table table-striped">
 							  <thead>
 							    <tr>
 							      <th scope="col">Result</th>
 							      <th scope="col">Bell</th>
 							      <th scope="col">Concurrence</th>
+							      <th scope="col">Tf-Idf</th>
+							      <th scope="col">Users Mark</th>
 							    </tr>
 							  </thead>
 							   <tbody>
@@ -67,6 +70,8 @@
 							      </td>
 							      <td>${result.pointsBell}</td>
 							      <td>${result.pontsConcurrence}</td>
+							      <td>${result.pointsTfIdf}</td>
+							      <td><input class="form-control form-control-sm" type="text"></td>
 							    </tr>
 							  </c:forEach>
 							    </tbody>
