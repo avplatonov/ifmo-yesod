@@ -265,7 +265,7 @@ public class calcBell {
 		define_proj_coefs(documentVector, orths1.getMatrix(0, 0, 0, orths1.getColumnDimension()-1), orths1.getMatrix(0, 0, 0, orths1.getColumnDimension()-1));
 		
 	
-		double p = wd1.times(wd2.transpose()).get(0, 0);
+		double p = Math.round(wd1.times(wd2.transpose()).get(0, 0) * 1000.0) / 1000.0;
 		
 		Matrix M = new Matrix (new double[][]{{p,Math.sqrt(1-p*p)},{-Math.sqrt(1-p*p),p}});
 		Matrix inM = M.inverse();
@@ -289,6 +289,9 @@ public class calcBell {
 	}
 	
 	public static double solve(String text, String query, int window) {
+		index.clear();
+		words = null;
+		hal = null;
 		String[] splitQuery = query.split(" ");
 		String wordProc1 = stemmer.stem(splitQuery[0]).toString();
 		String wordProc2 = stemmer.stem(splitQuery[1]).toString();
@@ -301,16 +304,22 @@ public class calcBell {
 		
 		word1Vector = new Matrix(hal[index.get(wordProc1)],1);}
 		catch(Exception e) {
-		word1Vector = new Matrix(hal[0].length,1);	
+		word1Vector = new Matrix(hal[0].length,1);
+		//word1Vector.set(0, hal[0].length-1, 1);
 		}
 		try {
 		word2Vector = new Matrix(hal[index.get(wordProc2)],1);
+		
+		
 		}
 		catch(Exception e) {
-			word2Vector = (new Matrix(1,hal[0].length));	
+			
+			word2Vector = (new Matrix(1,hal[0].length));
+			word2Vector.set(0, hal[0].length-1, 1);
+			
 		}
+		//System.out.println(index.get(wordProc2)/*Arrays.toString(words)*/);
 	
-
 		double ans = computeBell(documentVector,word1Vector, word2Vector);
 		return ans;
 	}

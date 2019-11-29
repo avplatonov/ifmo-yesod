@@ -50,7 +50,7 @@ public class MainController extends ElasticSearchYesod{
     static	List<Double> idf = cacher.getAllIdfData();
     static	List<String> docIds = cacher.getAllDocIdData();
     static	List<String> index = cacher.getAllIndexData();
-
+    //static List<Double> UpdateConcurrence = new ArrayList<>();
 	
 	/**
 	 * Function for getting search result from elastic base
@@ -61,17 +61,30 @@ public class MainController extends ElasticSearchYesod{
 	private void searcher(String query) throws IOException, ParseException {
 		restHighLevelClient = makeConnection();
 		viewResults.clear();
+		String[] queryTokens = (query.toLowerCase()).split(" ");
+		String calcQuery = "";
+		if (queryTokens.length == 1) {
+			calcQuery =  queryTokens + " " + queryTokens;
+		}
+		else if(queryTokens.length > 2) {
+			calcQuery = queryTokens[0] + " " + queryTokens[1];
+		}
+		else {
+			calcQuery = queryTokens[0] + " " + queryTokens[1];
+		}
 		int y =0;
 		DocumentItem tmpItem;
 		double tmp;
+		
 		for(DocObor i : searchDocsOborByTextFromBody(query)) {
 			tmpItem = new DocumentItem(i,y);
-			tmp = calcBell.solve(i.getBody(), query, 10);
+			tmp = calcBell.solve(i.getBody(), calcQuery, 10);			
 			tmpItem.setPointsBell((tmp==Double.NaN)? 0 :(double)Math.round(tmp * 1000)/1000);
-			tmp = calcConcurrense.solve(i.getBody(), query, 0.5);
+			tmp = calcConcurrense.solve(i.getBody(), calcQuery, 0.3);			
 			tmpItem.setPontsConcurrence((tmp==Double.NaN)? 0 :(double)Math.round(tmp * 1000)/1000);
-			tmp = calcTfIdf.solve(query,i.getDocId(),i.getBody(),idf, docIds,index,cacher);
+			tmp = calcTfIdf.solve(calcQuery,i.getDocId(),i.getBody(),idf, docIds,index,cacher);
 			tmpItem.setPointsTfIdf((tmp==Double.NaN)? 0 :(double)Math.round(tmp * 1000)/1000);
+			//UpdateConcurrence.add(calcConcurrense.solve1(i.getBody(), query, 0.1));
 			viewResults.add(tmpItem);
 			y++;
 		}
@@ -87,7 +100,7 @@ public class MainController extends ElasticSearchYesod{
     }
     
     /**
-     * If we have a request, this function process it and parameters/ 
+     * If we have a request, this function process it and parameters 
      * @param model Spring notation for link to model
      * @param query 
      * @param sortType number metric from view for sorting
@@ -139,6 +152,7 @@ public class MainController extends ElasticSearchYesod{
 					
 					model.addAttribute("results", viewResults);
 					model.addAttribute("query", query);
+					//model.addAttribute("concur_1", UpdateConcurrence);
 					
 				}
     			else if(sortType.equals("1")){
